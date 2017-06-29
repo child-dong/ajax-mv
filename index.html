@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+	<style>
+		body{
+			margin: 0;
+		}
+		.wrapper{
+			margin-top: 50px;
+			text-align: center;
+		}
+		video{
+			margin-left: 200px;
+			margin-top: 100px;
+		}
+		ul{
+			margin: 50px auto 0;
+			width: 1000px;
+		}
+		ul li{
+			float: left;
+			list-style-type: none;
+			width: 200px;
+		}
+		li img{
+			width: 100%;
+		}
+	</style>
+	<script src="ajax.js"></script>
+	<script>
+		window.onload = function(){
+			var song = document.getElementById('song');
+			var btn = document.getElementById('btn');
+			var lists = document.getElementById('lists');
+			var vide = document.getElementsByTagName('video')[0];
+			btn.onclick = function(){
+				if(song.value==""){
+					return false;
+				}
+				ajax({
+					type:'get',
+					url:'https://api.imjad.cn/cloudmusic/?type=search&s='+song.value,
+					async:true,
+					success:function (data){
+						lists.innerHTML = "";
+						for(var i=0;i<data.result.songs.length;i++){
+							var li = document.createElement('li');
+							var img = document.createElement('img');
+							img.setAttribute('src',data.result.songs[i].al.picUrl);
+							img.setAttribute('title', data.result.songs[i].mv)
+							li.appendChild(img)
+							lists.appendChild(li);
+						}
+					}
+				})
+			}
+
+
+			lists.onclick = function(e){			
+				var eve = e||window.event;
+				var target = eve.srcElement||eve.target;
+				if(target.nodeName.toLowerCase() == 'img'){
+					console.log(target.getAttribute('title'))
+				}
+				if(target.getAttribute('title')==0){
+					alert("MV不存在")
+					return false;
+				}
+				ajax({
+					type:'get',
+					url:'https://api.imjad.cn/cloudmusic/?type=mv&id='+target.getAttribute("title"),
+					async:true,
+					success:function (data){
+						console.log(data.data.brs["480"])
+						vide.setAttribute('src', data.data.brs["480"]);
+					}
+				})
+
+			}
+		}
+	</script>
+</head>
+<body>
+	<div class="wrapper">	
+		<input type="text" id="song" placeholder="输入歌曲">
+		<button id="btn">搜索</button>
+	</div>
+	<video src="" controls autoplay></video>
+	<ul id="lists">
+		<li><img src="4.jpg" alt=""></li>
+		<li><img src="4.jpg" alt=""></li>
+		<li><img src="4.jpg" alt=""></li>
+		<li><img src="4.jpg" alt=""></li>
+		<li><img src="4.jpg" alt=""></li>
+		<li><img src="4.jpg" alt=""></li>
+		<li><img src="4.jpg" alt=""></li>
+		<li><img src="4.jpg" alt=""></li>
+		<li><img src="4.jpg" alt=""></li>
+		<li><img src="4.jpg" alt=""></li>
+	</ul>
+</body>
+</html>
